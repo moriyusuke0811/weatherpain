@@ -1,3 +1,4 @@
+// アンケート用データ
 const questions = [
     { text: "あなたの体調チェック！", options: [""] },
     { text: "今日の体調は？", options: ["元気！", "だるい", "頭痛がする", "悪い", "その他"] },
@@ -5,10 +6,13 @@ const questions = [
     { text: "どんな痛み？", options: ["ズキズキ", "ガンガン", "ギュー", "〇〇", "△△"] },
     { text: "終了です！良い一日を！", options: [""] }
 ];
+
 let index = 0;
 const questionContainer = document.getElementById("question-container");
 const optionsContainer = document.getElementById("options-container");
 const nextButton = document.getElementById("next-btn");
+
+// 質問表示
 function showQuestion() {
     questionContainer.textContent = questions[index].text;
     optionsContainer.innerHTML = "";
@@ -19,26 +23,38 @@ function showQuestion() {
         optionsContainer.appendChild(btn);
     });
 }
+
+// 次へボタン
 nextButton.addEventListener("click", () => {
     if (index < questions.length - 1) {
         index++;
         showQuestion();
     }
 });
+
+// 初期表示
 showQuestion();
+
+// タブ切り替え
 const tabs = document.querySelectorAll(".tab-btn");
 tabs.forEach(tab => {
     tab.addEventListener("click", () => {
         document.querySelectorAll(".page").forEach(page => page.style.display = "none");
-        document.getElementById(tab.dataset.target).style.display = "flex";
+        const targetPage = tab.dataset.target;
+        if (targetPage) {
+            document.getElementById(targetPage).style.display = "flex";
+        }
     });
 });
-const CSV_URL = "https://www.data.jma.go.jp/obd/stats/data/mdrr/pre_rct/alltable.csv";
-let weatherChart;
-const API_KEY = '1090dd750a08df47d3fa763aab9c0c3b';
-const CITY_ID = '1850147'; // 東京
+
+// --- OpenWeather APIを使った天気データ取得 ---
+const API_KEY = '1090dd750a08df47d3fa763aab9c0c3b'; // ★ここをあなたのOpenWeather APIキーに変更
+const CITY_ID = '1850147'; // ★東京ID、地域に合わせて変更可
 const WEATHER_API_URL = `https://api.openweathermap.org/data/2.5/forecast?id=${CITY_ID}&appid=${API_KEY}&units=metric&lang=ja`;
 
+let weatherChart;
+
+// OpenWeatherからデータ取得
 async function fetchOpenWeatherData() {
     try {
         const response = await fetch(WEATHER_API_URL);
@@ -50,6 +66,8 @@ async function fetchOpenWeatherData() {
         console.error(error);
     }
 }
+
+// OpenWeatherデータ整形
 function parseOpenWeatherData(data) {
     const labels = [];
     const temperatures = [];
@@ -64,12 +82,8 @@ function parseOpenWeatherData(data) {
 
     return { labels, temperatures, pressures };
 }
-③ updateChartも気圧対応に変更
-今の updateChart を少しパワーアップさせます。
 
-javascript
-コピーする
-編集する
+// グラフ更新
 function updateChart(data) {
     const ctx = document.getElementById("weatherChart").getContext("2d");
     if (weatherChart) weatherChart.destroy();
@@ -82,28 +96,35 @@ function updateChart(data) {
                     label: "気温 (℃)",
                     data: data.temperatures,
                     borderColor: "red",
-                    fill: false,
+                    backgroundColor: "rgba(255, 99, 132, 0.2)",
                     yAxisID: 'y',
                 },
                 {
                     label: "気圧 (hPa)",
                     data: data.pressures,
                     borderColor: "blue",
-                    fill: false,
+                    backgroundColor: "rgba(54, 162, 235, 0.2)",
                     yAxisID: 'y1',
                 }
             ]
         },
         options: {
             responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            stacked: false,
             scales: {
                 y: {
                     type: 'linear',
+                    display: true,
                     position: 'left',
                     title: { display: true, text: "気温 (℃)" }
                 },
                 y1: {
                     type: 'linear',
+                    display: true,
                     position: 'right',
                     grid: { drawOnChartArea: false },
                     title: { display: true, text: "気圧 (hPa)" }
@@ -114,8 +135,7 @@ function updateChart(data) {
     document.getElementById("update-time").textContent = "最終更新: " + new Date().toLocaleTimeString();
 }
 
+// 最初にデータ取得
 fetchOpenWeatherData();
-setInterval(fetchOpenWeatherData, 12 * 60 * 60 * 1000); // 12時間ごとに更新
-
-fetchWeatherData();
-setInterval(fetchWeatherData, 12 * 60 * 60 * 1000);
+// 12時間ごとにデータ更新
+setInterval(fetchOpenWeatherData, 12 * 60 * 60 * 1000);
