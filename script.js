@@ -40,7 +40,6 @@ tabs.forEach(tab => {
     tab.addEventListener("click", () => {
         const targetPage = tab.dataset.target;
         if (!targetPage) {
-            // data-targetがないボタンは何もしない
             return;
         }
         document.querySelectorAll(".page").forEach(page => page.style.display = "none");
