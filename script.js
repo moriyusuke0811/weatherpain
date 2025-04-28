@@ -35,15 +35,16 @@ nextButton.addEventListener("click", () => {
 // 初期表示
 showQuestion();
 
-// タブ切り替え
 const tabs = document.querySelectorAll(".tab-btn");
 tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-        document.querySelectorAll(".page").forEach(page => page.style.display = "none");
         const targetPage = tab.dataset.target;
-        if (targetPage) {
-            document.getElementById(targetPage).style.display = "flex";
+        if (!targetPage) {
+            // data-targetがないボタンは何もしない
+            return;
         }
+        document.querySelectorAll(".page").forEach(page => page.style.display = "none");
+        document.getElementById(targetPage).style.display = "flex";
     });
 });
 
