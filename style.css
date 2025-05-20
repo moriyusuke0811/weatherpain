@@ -83,13 +83,20 @@ body {
   cursor: pointer;
 }
 
-.weather-chart {
+.chart-wrapper {
   width: 100%;
-  height: 160px; /* デフォルト：PC用 */
+  height: 300px;  /* PCの高さ */
+  overflow-x: auto;
 }
-
+.weather-chart {
+  width: 1000px;  /* データ点が多くても横に広げる */
+  height: 100%;
+}
 @media screen and (max-width: 600px) {
+  .chart-wrapper {
+    height: 160px;  /* スマホで少し小さく */
+  }
   .weather-chart {
-    height: 100px; /* スマホ用に高さを小さく */
+    width: 1200px;  /* スマホでも横スライドできるように広く */
   }
 }
