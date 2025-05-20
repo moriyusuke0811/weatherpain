@@ -139,3 +139,70 @@ function updateChart(data) {
 fetchOpenWeatherData();
 // 12時間ごとにデータ更新
 setInterval(fetchOpenWeatherData, 12 * 60 * 60 * 1000);
+const isMobile = window.innerWidth < 600;
+
+function updateChart(data) {
+    const ctx = document.getElementById("weatherChart").getContext("2d");
+    if (weatherChart) weatherChart.destroy();
+
+    function getGradientColor(value) {
+        if (value >= 1015) return '#00aaff';
+        if (value >= 1000) return '#00cc66';
+        if (value >= 985)  return '#ffaa00';
+        return '#ff4444';
+    }
+
+    weatherChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: data.labels,
+            datasets: [
+                {
+                    label: isMobile ? undefined : "気温 (℃)",
+                    data: data.temperatures,
+                    borderColor: "red",
+                    backgroundColor: "rgba(255, 99, 132, 0.2)",
+                    yAxisID: 'y',
+                },
+                {
+                    label: isMobile ? undefined : "気圧 (hPa)",
+                    data: data.pressures,
+                    borderColor: data.pressures.map(getGradientColor),
+                    backgroundColor: "rgba(54, 162, 235, 0.2)",
+                    yAxisID: 'y1',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: !isMobile
+                }
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            stacked: false,
+            scales: {
+                x: {
+                    display: !isMobile
+                },
+                y: {
+                    display: !isMobile,
+                    position: 'left',
+                    title: { display: !isMobile, text: "気温 (℃)" }
+                },
+                y1: {
+                    display: !isMobile,
+                    position: 'right',
+                    grid: { drawOnChartArea: false },
+                    title: { display: !isMobile, text: "気圧 (hPa)" }
+                }
+            }
+        }
+    });
+    document.getElementById("update-time").textContent = "最終更新: " + new Date().toLocaleTimeString();
+}
