@@ -84,7 +84,7 @@ body {
 }
 
 .chart-wrapper {
-  width: 100%;
+  width: 200%;
   height: 400px;  /* PCの高さ */
   overflow-x: auto;
 }
@@ -99,7 +99,7 @@ body {
     height: 100%;
   }
   .chart-wrapper {
-    height: 250px;  /* スマホで少し小さく */
+    height: 70%;  /* スマホで少し小さく */
   }
   .weather-chart {
     width: 1200px;  /* スマホでも横スライドできるように広く */
