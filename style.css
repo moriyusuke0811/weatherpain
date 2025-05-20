@@ -115,6 +115,6 @@ body {
 
   .weather-chart {
     min-width: 1200px;  /* スマホでもスクロールできるように広めに設定 */
-    height: 600px;
+    height: auto;
   }
 }
