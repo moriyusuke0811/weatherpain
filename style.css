@@ -21,7 +21,7 @@ body {
 .container {
   position: relative;
   width: 90%;
-  max-width: 600px;
+  max-width: 800px;
   height: auto;
   padding: 20px;
   background: white;
@@ -85,7 +85,7 @@ body {
 
 .chart-wrapper {
   width: 100%;
-  height: 300px;  /* PCの高さ */
+  height: 400px;  /* PCの高さ */
   overflow-x: auto;
 }
 .weather-chart {
@@ -94,7 +94,7 @@ body {
 }
 @media screen and (max-width: 600px) {
   .chart-wrapper {
-    height: 160px;  /* スマホで少し小さく */
+    height: 250px;  /* スマホで少し小さく */
   }
   .weather-chart {
     width: 1200px;  /* スマホでも横スライドできるように広く */
