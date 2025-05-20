@@ -8,6 +8,7 @@ header {
   z-index: 1001;
   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.05);
 }
+
 body {
   display: flex;
   flex-direction: column;
@@ -43,9 +44,11 @@ body {
   font-weight: bold;
   transition: transform 0.5s ease-in-out;
 }
+
 .options-box {
   margin-top: 15px;
 }
+
 .survey-option {
   display: block;
   margin: 5px auto;
@@ -58,14 +61,12 @@ body {
   border-radius: 5px;
   transition: background-color 0.3s, color 0.3s;
 }
+
 .survey-option:hover {
   background-color: #007bff;
   color: white;
 }
-.weather-chart {
-  width: 100%;
-  height: 300px;
-}
+
 .footer {
   position: fixed;
   bottom: 0;
@@ -75,6 +76,7 @@ body {
   justify-content: space-around;
   padding: 10px 0;
 }
+
 .tab-btn {
   background: none;
   border: none;
@@ -83,25 +85,36 @@ body {
   cursor: pointer;
 }
 
+/* --- グラフ表示エリア調整 --- */
 .chart-wrapper {
-  width: 200%;
-  height: 400px;  /* PCの高さ */
-  overflow-x: auto;
+  width: 100%;
+  overflow-x: auto;     /* 横スクロール可能に */
+  overflow-y: hidden;   /* 縦スクロールは無効 */
+  -webkit-overflow-scrolling: touch; /* iOSスムーズスクロール */
+  margin: 20px 0;
+  border-radius: 10px;
 }
+
 .weather-chart {
-  width: 1000px;  /* データ点が多くても横に広げる */
-  height: 100%;
+  min-width: 1000px;    /* 横幅を強制的に広くして横スクロール可能に */
+  height: 300px;
+  display: block;
+  box-sizing: border-box;
 }
+
+/* --- スマホ向けレスポンシブ対応 --- */
 @media screen and (max-width: 600px) {
-  
   .container {
     width: 100%;
-    height: 100%;
+    padding: 10px;
   }
+
   .chart-wrapper {
-    height: 70%;  /* スマホで少し小さく */
+    height: 240px; /* スマホでは少し小さめに */
   }
+
   .weather-chart {
-    width: 1200px;  /* スマホでも横スライドできるように広く */
+    min-width: 1200px;  /* スマホでもスクロールできるように広めに設定 */
+    height: 240px;
   }
 }
