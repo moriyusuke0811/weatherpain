@@ -110,11 +110,11 @@ body {
   }
 
   .chart-wrapper {
-    height: 240px; /* スマホでは少し小さめに */
+    height: 600px; /* スマホでは少し小さめに */
   }
 
   .weather-chart {
     min-width: 1200px;  /* スマホでもスクロールできるように広めに設定 */
-    height: 240px;
+    height: 600px;
   }
 }
