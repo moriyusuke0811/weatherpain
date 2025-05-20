@@ -24,16 +24,7 @@ body {
   justify-content: center;
   align-items: center;
 }
-.container {
-  position: relative;
-  width: 800px;
-  height: 500px;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
+
 .question-box {
   font-size: 20px;
   font-weight: bold;
@@ -78,14 +69,31 @@ body {
   font-size: 16px;
   cursor: pointer;
 }
-.weather-chart {
-  width: 100%;
-  height: 400px; /* デフォルト（PCなど） */
+
+.container {
+  position: relative;
+  width: 90%;
+  max-width: 800px;
+  height: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-/* スマホ用に高さを小さくする */
 @media screen and (max-width: 600px) {
+  .container {
+    width: 95%;
+    padding: 15px;
+  }
+
   .weather-chart {
     height: 250px;
   }
+}
+
+.weather-chart {
+  width: 100%;
+  height: 400px;
 }
