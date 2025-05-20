@@ -73,7 +73,7 @@ body {
 .container {
   position: relative;
   width: 90%;
-  max-width: 800px;
+  max-width: 600px;
   height: auto;
   padding: 20px;
   background: white;
