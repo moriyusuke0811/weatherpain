@@ -96,7 +96,7 @@ body {
 }
 
 .weather-chart {
-  min-width: 1000px;    /* 横幅を強制的に広くして横スクロール可能に */
+  min-width: 100%;    /* 横幅を強制的に広くして横スクロール可能に */
   height: 300px;
   display: block;
   box-sizing: border-box;
