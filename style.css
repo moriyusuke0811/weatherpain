@@ -106,15 +106,16 @@ body {
 @media screen and (max-width: 600px) {
   .container {
     width: 100%;
+    height: 100%;
     padding: 10px;
   }
 
   .chart-wrapper {
-    height: 240px; /* スマホでは少し小さめに */
+    height: 100%; /* スマホでは少し小さめに */
   }
 
   .weather-chart {
     min-width: 1200px;  /* スマホでもスクロールできるように広めに設定 */
-    height: 240px;
+    height: 100%;
   }
 }
