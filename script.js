@@ -83,7 +83,6 @@ function parseOpenWeatherData(data) {
     return { labels, temperatures, pressures };
 }
 
-// グラフ更新
 function updateChart(data) {
     const ctx = document.getElementById("weatherChart").getContext("2d");
     if (weatherChart) weatherChart.destroy();
@@ -110,6 +109,7 @@ function updateChart(data) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false, // ← これで縦長問題が解決！
             interaction: {
                 mode: 'index',
                 intersect: false,
@@ -131,7 +131,8 @@ function updateChart(data) {
                 }
             }
         }
-    });
+    }); // ← ← ← この位置で閉じる
+
     document.getElementById("update-time").textContent = "最終更新: " + new Date().toLocaleTimeString();
 }
 
