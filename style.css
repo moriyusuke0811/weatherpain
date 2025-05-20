@@ -93,6 +93,11 @@ body {
   height: 100%;
 }
 @media screen and (max-width: 600px) {
+  
+    .container {
+    width: 100%;
+    height: 100%;
+  }
   .chart-wrapper {
     height: 250px;  /* スマホで少し小さく */
   }
