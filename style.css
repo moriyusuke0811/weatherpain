@@ -84,11 +84,11 @@ body {
 
 .weather-chart {
   width: 100%;
-  height: 400px; /* デフォルト：PC用 */
+  height: 160px; /* デフォルト：PC用 */
 }
 
 @media screen and (max-width: 600px) {
   .weather-chart {
-    height: 250px; /* スマホ用に高さを小さく */
+    height: 100px; /* スマホ用に高さを小さく */
   }
 }
