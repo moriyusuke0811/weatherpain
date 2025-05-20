@@ -16,22 +16,24 @@
         </div>
     </header>
     <div style="height:180px;"></div>
-    <div id="survey-page" class="page">
+
+    <!-- 天気予報をデフォルト表示に変更 -->
+    <div id="survey-page" class="page" style="display: none;">
         <div class="container">
             <div id="question-container" class="question-box"></div>
             <div id="options-container" class="options-box"></div>
             <button id="next-btn" class="btn">次へ</button>
         </div>
     </div>
-    
-    <div id="weather-page" class="page" style="display: none;">
+
+    <div id="weather-page" class="page">
         <div class="container">
             <h1>最新の気象データ</h1>
             <canvas id="weatherChart" class="weather-chart"></canvas>
             <p id="update-time">データ取得中...</p>
         </div>
     </div>
-    <!-- form-pageを追加 -->
+
     <div id="form-page" class="page" style="display: none;">
         <div class="container">
             <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSesH00L_RBN2x-iqtv6i36ovIjnfKhjH6Yi-y0yIreCGa0fFw/viewform?embedded=true"
@@ -40,12 +42,13 @@
             </iframe>
         </div>
     </div>
+
     <div class="footer">
         <button class="tab-btn" data-target="survey-page">アンケート</button>
         <button class="tab-btn" data-target="weather-page">天気予報</button>
         <button class="tab-btn" data-target="form-page">FORM</button>
     </div>
-    
+
     <script src="script.js"></script>
 </body>
 </html>
