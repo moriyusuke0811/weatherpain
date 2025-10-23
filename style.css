@@ -8,16 +8,15 @@ header {
   z-index: 1001;
   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.05);
 }
-
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
   background-color: #0d1117;
-  color: #e6edf3;
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
+  color: #e6edf3;
 }
 
 header {
@@ -27,10 +26,10 @@ header {
   left: 0;
   background-color: #161b22;
   color: #e6edf3;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
   text-align: center;
   padding: 10px 0;
   z-index: 1001;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
 .container {
@@ -42,100 +41,21 @@ header {
   padding: 20px;
   background: #1c2128;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   text-align: center;
 }
 
-.page {
-  width: 100%;
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.question-box {
-  font-size: 20px;
-  font-weight: bold;
-  transition: transform 0.5s ease-in-out;
-}
-
-.options-box {
-  margin-top: 15px;
-}
-
-.survey-option {
-  display: block;
-  margin: 5px auto;
-  padding: 8px 15px;
-  font-size: 16px;
-  cursor: pointer;
-  border: 1px solid #58a6ff;
-  background-color: #1c2128;
-  color: #58a6ff;
-  border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.survey-option:hover {
-  background-color: #58a6ff;
-  color: #0d1117;
-}
-
-.footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #161b22;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-  border-top: 1px solid #30363d;
-}
-
-.tab-btn {
-  background: none;
-  border: none;
-  color: #58a6ff;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.tab-btn:hover {
-  color: #79c0ff;
-}
-
-/* --- グラフ表示エリア --- */
 .chart-wrapper {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
   margin: 20px 0;
   border-radius: 10px;
 }
 
 .weather-chart {
-  min-width: 1600px; /* データに応じて横スクロール可能 */
+  min-width: 1600px; /* 横スクロール用に広く */
   height: 400px;
   display: block;
   box-sizing: border-box;
   background-color: #0d1117;
-}
-
-/* --- スマホ対応 --- */
-@media screen and (max-width: 600px) {
-  .container {
-    width: 100%;
-    padding: 10px;
-  }
-
-  .chart-wrapper {
-    height: 300px;
-  }
-
-  .weather-chart {
-    min-width: 2000px;
-    height: 250px;
-  }
 }
