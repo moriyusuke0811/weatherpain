@@ -13,21 +13,36 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
-  background-color: #f3f4f6;
+  min-height: 100vh;
+  background-color: #0d1117;
+  color: #e6edf3;
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: #161b22;
+  color: #e6edf3;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  padding: 10px 0;
+  z-index: 1001;
 }
 
 .container {
   position: relative;
-  width: 90%;
-  max-width: 800px;
-  height: auto;
+  width: 95%;
+  max-width: 900px;
+  margin-top: 120px;
+  margin-bottom: 100px;
   padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: #1c2128;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   text-align: center;
 }
 
@@ -55,54 +70,60 @@ body {
   padding: 8px 15px;
   font-size: 16px;
   cursor: pointer;
-  border: 1px solid #007bff;
-  background-color: white;
-  color: #007bff;
+  border: 1px solid #58a6ff;
+  background-color: #1c2128;
+  color: #58a6ff;
   border-radius: 5px;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .survey-option:hover {
-  background-color: #007bff;
-  color: white;
+  background-color: #58a6ff;
+  color: #0d1117;
 }
 
 .footer {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: #007bff;
+  background: #161b22;
   display: flex;
   justify-content: space-around;
   padding: 10px 0;
+  border-top: 1px solid #30363d;
 }
 
 .tab-btn {
   background: none;
   border: none;
-  color: white;
+  color: #58a6ff;
   font-size: 16px;
   cursor: pointer;
 }
 
-/* --- グラフ表示エリア調整 --- */
+.tab-btn:hover {
+  color: #79c0ff;
+}
+
+/* --- グラフ表示エリア --- */
 .chart-wrapper {
   width: 100%;
-  overflow-x: auto;     /* 横スクロール可能に */
-  overflow-y: hidden;   /* 縦スクロールは無効 */
-  -webkit-overflow-scrolling: touch; /* iOSスムーズスクロール */
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   margin: 20px 0;
   border-radius: 10px;
 }
 
 .weather-chart {
-  min-width: 100%;    /* 横幅を強制的に広くして横スクロール可能に */
-  height: 450px;
+  min-width: 1600px; /* データに応じて横スクロール可能 */
+  height: 400px;
   display: block;
   box-sizing: border-box;
+  background-color: #0d1117;
 }
 
-/* --- スマホ向けレスポンシブ対応 --- */
+/* --- スマホ対応 --- */
 @media screen and (max-width: 600px) {
   .container {
     width: 100%;
@@ -110,11 +131,11 @@ body {
   }
 
   .chart-wrapper {
-    height: 600px; /* スマホでは少し小さめに */
+    height: 300px;
   }
 
   .weather-chart {
-    min-width: 1200px;  /* スマホでもスクロールできるように広めに設定 */
-    height: auto;
+    min-width: 2000px;
+    height: 250px;
   }
 }
