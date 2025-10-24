@@ -72,7 +72,7 @@
       }
       canvas.weather-chart {
         height: 240px;
-        width: 1000px; /* スマホでは横幅を少し短くして歪み防止 */
+        width: 1000px; /* スマホでは横幅を短くして歪み防止 */
       }
     }
 
@@ -96,12 +96,12 @@
   <script>
     let weatherChart;
 
-    // ダミーデータ
+    // ✅ ダミーデータ（ランダムな気圧変化を生成）
     const sampleData = {
-      labels: Array.from({ length: 48 }, (_, i) => i + "h"),
-      pressures: Array.from({ length: 48 }, () =>
+      labels: Array.from({ length: 48 }, (_, i) => `${i}h`),
+      pressures: Array.from({ length: 48 }, (_, i) =>
         1000 + Math.sin(i / 4) * 15 + Math.random() * 5
-      ),
+      )
     };
 
     function updateChart(data) {
@@ -132,27 +132,21 @@
               borderColor: gradient,
               borderWidth: 3,
               fill: false,
-              tension: 0.4,
-              pointRadius: 0,
+              tension: 0.4, // 曲線っぽく
+              pointRadius: 0, // 点を非表示
             },
           ],
         },
         options: {
-          responsive: false, // ★ これが重要：Chart.jsの自動リサイズを無効化
+          responsive: false, // ★ Chart.jsの自動サイズ調整をOFF
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
             tooltip: { enabled: false },
           },
           scales: {
-            x: {
-              display: false,
-              grid: { display: false },
-            },
-            y: {
-              display: false,
-              grid: { display: false },
-            },
+            x: { display: false, grid: { display: false } },
+            y: { display: false, grid: { display: false } },
           },
         },
       });
