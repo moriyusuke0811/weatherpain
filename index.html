@@ -20,14 +20,19 @@
     }
 
     .chart-wrapper {
-        width: 100vw;
-        height: 70vh;
-        overflow-x: auto;
-        overflow-y: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    width: 100%;       /* ← 修正！ */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    height: 55vh;      /* 画面の55%を高さに */
+    display: flex;
+    justify-content: center;
     }
+
+    .weather-chart {
+    width: 1400px;     /* 横に広い実データ */
+    height: 100%;
+    }
+
 
     canvas {
         background: transparent;
