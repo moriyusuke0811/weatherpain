@@ -134,8 +134,8 @@
 
     <!-- 🔵 グラデーション凡例エリア -->
     <div class="legend-area">
-      <div class="gradient-bar"></div>
       <div class="legend-labels" id="time-labels"></div> <!-- 時刻ラベル -->
+      <div class="gradient-bar"></div>
       <div class="legend-labels">
         <span>低気圧傾向</span>
         <span>通常</span>
@@ -259,7 +259,7 @@
 
     // ── 時刻と「今から何分後か」表示 ──
     const startTime = new Date(); // 現在時刻
-    const intervalMinutes = 30;   // 30分刻み
+    const intervalMinutes = 60;   // 60分刻み
     const labelsContainer = document.getElementById("time-labels");
     labelsContainer.innerHTML = "";
 
