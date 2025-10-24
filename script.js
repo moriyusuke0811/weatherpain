@@ -84,53 +84,57 @@ function updateChart(data) {
   const ctx = document.getElementById("weatherChart").getContext("2d");
   if (weatherChart) weatherChart.destroy();
 
-  // グラデーションライン
+  // グラデーション（気圧変化に合わせて色変化）
   const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
   gradient.addColorStop(0, "#ff4444");
   gradient.addColorStop(0.5, "#ffaa00");
   gradient.addColorStop(1, "#00aaff");
 
   weatherChart = new Chart(ctx, {
-    type: 'line',
+    type: "line",
     data: {
       labels: data.labels,
       datasets: [
         {
-          label: "気温 (℃)",
-          data: data.temperatures,
-          borderColor: "#ff5555",
-          backgroundColor: "rgba(255,85,85,0.2)",
-          fill: true,
-          tension: 0.4,
-          yAxisID: 'y',
-          pointRadius: 0
-        },
-        {
-          label: "気圧 (hPa)",
-          data: data.pressures,
+          data: data.pressures, // 気圧メイン
           borderColor: gradient,
+          borderWidth: 3,
           fill: false,
-          tension: 0.4,
-          yAxisID: 'y1',
-          pointRadius: 0
-        }
-      ]
+          tension: 0.4, // なめらかな曲線
+          pointRadius: 0,
+        },
+      ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: true, labels: { color: '#e6edf3' } } },
-      scales: {
-        x: { ticks: { color: '#9ba1a6' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-        y: { ticks: { color: '#9ba1a6' }, grid: { color: 'rgba(255,255,255,0.1)' }, position: 'left' },
-        y1: { ticks: { color: '#9ba1a6' }, grid: { drawOnChartArea: false }, position: 'right' }
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false }, // ツールチップも非表示
       },
-      interaction: { mode: 'index', intersect: false }
-    }
+      scales: {
+        x: {
+          display: false,
+          grid: { display: false, drawBorder: false },
+          ticks: { display: false },
+        },
+        y: {
+          display: false,
+          grid: { display: false, drawBorder: false },
+          ticks: { display: false },
+        },
+      },
+      layout: {
+        padding: 0,
+      },
+      elements: {
+        line: {
+          tension: 0.5, // 曲線っぽく
+        },
+      },
+    },
   });
 
-  document.getElementById("update-time").textContent = "最終更新: " + new Date().toLocaleTimeString();
+  document.getElementById("update-time").textContent =
+    "最終更新: " + new Date().toLocaleTimeString();
 }
-
-fetchOpenWeatherData();
-setInterval(fetchOpenWeatherData, 12 * 60 * 60 * 1000);

@@ -1,35 +1,8 @@
-header {
-  position: fixed;
-  width: 100%;
-  left: 0;
-  top: 0;
-  margin: 0;
-  background-color: #ffffff;
-  z-index: 1001;
-  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.05);
-}
 body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
   background-color: #0d1117;
+  color: #e6edf3;
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
-  color: #e6edf3;
-}
-
-header {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  background-color: #161b22;
-  color: #e6edf3;
-  text-align: center;
-  padding: 10px 0;
-  z-index: 1001;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
 .container {
@@ -48,14 +21,14 @@ header {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   margin: 20px 0;
   border-radius: 10px;
 }
 
 .weather-chart {
-  min-width: 1600px; /* 横スクロール用に広く */
+  min-width: 1600px;
   height: 400px;
   display: block;
-  box-sizing: border-box;
   background-color: #0d1117;
 }
