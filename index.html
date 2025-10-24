@@ -1,124 +1,278 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pressure Graph</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>気圧変化グラフ</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
     body {
-        background-color: #000;
-        color: white;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100vh;
-        overflow: hidden;
+      background-color: #0d1117;
+      color: #e6edf3;
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #161b22;
+      color: #e6edf3;
+      text-align: center;
+      padding: 15px;
+      font-size: 20px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+      z-index: 10;
+    }
+
+    .container {
+      position: relative;
+      width: 95%;
+      max-width: 900px;
+      margin-top: 100px;
+      margin-bottom: 100px;
+      padding: 20px;
+      background: #1c2128;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+      text-align: center;
     }
 
     .chart-wrapper {
-    width: 100%;       /* ← 修正！ */
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    height: 55vh;      /* 画面の55%を高さに */
-    display: flex;
-    justify-content: center;
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 10px;
+      background-color: #0d1117;
     }
 
-    .weather-chart {
-    width: 1400px;     /* 横に広い実データ */
-    height: 100%;
+    canvas.weather-chart {
+      height: 400px;
+      width: 1600px;
+      display: block;
     }
 
-
-    canvas {
-        background: transparent;
-        min-width: 150%;
-    }
-
-    .legend {
-        width: 90vw;
-        margin-top: 10px;
-        text-align: center;
-        font-size: 14px;
+    /* --- 凡例エリア --- */
+    .legend-area {
+      margin-top: 20px;
+      text-align: center;
     }
 
     .gradient-bar {
-        height: 10px;
-        width: 100%;
-        background: linear-gradient(to right,
-            #2fa1ff,
-            #00ffae,
-            #faff00,
-            #ff7b00,
-            #ff0000
-        );
-        border-radius: 6px;
-        margin-bottom: 4px;
+      width: 80%;
+      height: 18px;
+      margin: 10px auto;
+      background: linear-gradient(to right, #ff4444, #ffaa00, #00aaff);
+      border-radius: 10px;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
     }
-</style>
+
+    .legend-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 80%;
+      margin: 0 auto;
+      font-size: 12px;
+      color: #c9d1d9;
+    }
+
+    /* スマホ対応 */
+    @media screen and (max-width: 600px) {
+      .container {
+        width: 100%;
+        margin-top: 80px;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .chart-wrapper {
+        overflow-x: auto;
+      }
+
+      canvas.weather-chart {
+        height: 240px;
+        width: 1000px;
+      }
+
+      .gradient-bar,
+      .legend-labels {
+        width: 90%;
+      }
+    }
+
+    #update-time {
+      font-size: 12px;
+      color: #8b949e;
+      margin-top: 10px;
+    }
+    /* 時刻ラベルの装飾 */
+    #time-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    margin: 0 auto;
+    font-size: 12px;
+    color: #c9d1d9;
+    }
+
+  </style>
 </head>
 <body>
+  <header>気圧変化ビューア</header>
 
-<div class="chart-wrapper">
-    <canvas id="pressureChart"></canvas>
-</div>
+  <div class="container">
+    <div class="chart-wrapper">
+      <canvas id="weatherChart" class="weather-chart"></canvas>
+    </div>
 
-<div class="legend">
-    <div class="gradient-bar"></div>
-    <span>高気圧　→　低気圧（色で直感的に表現）</span><br>
-    <span style="opacity:0.6;">横にスクロールして確認できます</span>
-</div>
+    <!-- 🔵 グラデーション凡例エリア -->
+    <div class="legend-area">
+      <div class="gradient-bar"></div>
+      <div class="legend-labels" id="time-labels"></div> <!-- 時刻ラベル -->
+      <div class="legend-labels">
+        <span>低気圧傾向</span>
+        <span>通常</span>
+        <span>高気圧傾向</span>
+      </div>
+    </div>
 
-<script>
-    const ctx = document.getElementById('pressureChart').getContext('2d');
+    <div id="update-time">最終更新: --:--:--</div>
+  </div>
 
-    const labels = [
-        "10/24 00:00", "10/24 03:00", "10/24 06:00",
-        "10/24 09:00", "10/24 12:00", "10/24 15:00",
-        "10/24 18:00", "10/24 21:00"
-    ];
+  <script>
+    let weatherChart;
 
-    const data = [1020, 1018, 1015, 1009, 1005, 1008, 1012, 1016];
+    // ✅ ダミーデータ（ランダムな気圧変化）
+    const sampleData = {
+      labels: Array.from({ length: 48 }, (_, i) => `${i}h`),
+      pressures: Array.from({ length: 48 }, (_, i) =>
+        1000 + Math.sin(i / 4) * 15 + Math.random() * 5
+      )
+    };
 
-    const gradient = ctx.createLinearGradient(0, 0, 600, 0);
-    gradient.addColorStop(0, '#2fa1ff');
-    gradient.addColorStop(0.3, '#00ffae');
-    gradient.addColorStop(0.5, '#faff00');
-    gradient.addColorStop(0.7, '#ff7b00');
-    gradient.addColorStop(1, '#ff0000');
+    function updateChart(data) {
+      const canvas = document.getElementById("weatherChart");
+      const ctx = canvas.getContext("2d");
 
-    new Chart(ctx, {
-        type: 'line',
+      if (weatherChart) weatherChart.destroy();
+
+      // デバイスピクセル比補正
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = canvas.offsetWidth * ratio;
+      canvas.height = canvas.offsetHeight * ratio;
+      ctx.scale(ratio, ratio);
+
+      // グラデーション（赤→オレンジ→青）
+      const gradient = ctx.createLinearGradient(0, 0, canvas.offsetWidth, 0);
+      gradient.addColorStop(0, "#ff4444");
+      gradient.addColorStop(0.5, "#ffaa00");
+      gradient.addColorStop(1, "#00aaff");
+
+      weatherChart = new Chart(ctx, {
+        type: "line",
         data: {
-            labels,
-            datasets: [{
-                data,
-                borderColor: gradient,
-                borderWidth: 4,
-                pointRadius: 0,
-                tension: 0.5,
-            }]
+          labels: data.labels,
+          datasets: [
+            {
+              data: data.pressures,
+              borderColor: gradient,
+              borderWidth: 3,
+              fill: false,
+              tension: 0.4,
+              pointRadius: 0,
+            },
+          ],
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: { display: false },
-                x: {
-                    ticks: { color: 'white', font: { size: 12 }},
-                    grid: { display: false }
-                }
-            }
-        }
-    });
-</script>
+          responsive: false,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+          },
+          scales: {
+            x: { display: false, grid: { display: false } },
+            y: { display: false, grid: { display: false } },
+          },
+        },
+      });
 
+      document.getElementById("update-time").textContent =
+        "最終更新: " + new Date().toLocaleTimeString();
+    }
+
+    updateChart(sampleData);
+    function updateChart(data) {
+  const canvas = document.getElementById("weatherChart");
+  const ctx = canvas.getContext("2d");
+
+  if (weatherChart) weatherChart.destroy();
+
+  const ratio = window.devicePixelRatio || 1;
+  canvas.width = canvas.offsetWidth * ratio;
+  canvas.height = canvas.offsetHeight * ratio;
+  ctx.scale(ratio, ratio);
+
+  const gradient = ctx.createLinearGradient(0, 0, canvas.offsetWidth, 0);
+  gradient.addColorStop(0, "#ff4444");
+  gradient.addColorStop(0.5, "#ffaa00");
+  gradient.addColorStop(1, "#00aaff");
+
+  weatherChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: data.labels,
+      datasets: [
+        {
+          data: data.pressures,
+          borderColor: gradient,
+          borderWidth: 3,
+          fill: false,
+          tension: 0.4,
+          pointRadius: 0,
+        },
+      ],
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false },
+      },
+      scales: {
+        x: { display: false, grid: { display: false } },
+        y: { display: false, grid: { display: false } },
+      },
+    },
+  });
+
+    document.getElementById("update-time").textContent =
+    "最終更新: " + new Date().toLocaleTimeString();
+
+    // ── 時刻と「今から何分後か」表示 ──
+    const startTime = new Date(); // 現在時刻
+    const intervalMinutes = 30;   // 30分刻み
+    const labelsContainer = document.getElementById("time-labels");
+    labelsContainer.innerHTML = "";
+
+    data.labels.forEach((_, i) => {
+        const futureTime = new Date(startTime.getTime() + i * intervalMinutes * 60 * 1000);
+        const hours = futureTime.getHours().toString().padStart(2, "0");
+        const minutes = futureTime.getMinutes().toString().padStart(2, "0");
+        const span = document.createElement("span");
+        span.textContent = `${hours}:${minutes} (${i * intervalMinutes}分後)`;
+        labelsContainer.appendChild(span);
+    });
+    }
+
+  </script>
 </body>
 </html>
