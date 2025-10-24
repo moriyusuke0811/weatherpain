@@ -1,56 +1,173 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>アンケート＆天気予報</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>気圧変化グラフ</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ===== 基本レイアウト ===== */
+    body {
+      background-color: #0d1117;
+      color: #e6edf3;
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #161b22;
+      color: #e6edf3;
+      text-align: center;
+      padding: 15px;
+      font-size: 20px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+      z-index: 10;
+    }
+
+    .container {
+      position: relative;
+      width: 95%;
+      max-width: 900px;
+      margin-top: 100px;
+      margin-bottom: 100px;
+      padding: 20px;
+      background: #1c2128;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    /* ===== グラフ表示領域 ===== */
+    .chart-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 10px;
+      background-color: #0d1117;
+    }
+
+    .weather-chart {
+      min-width: 1600px; /* 横にスクロール可能 */
+      height: 400px;     /* PC用高さ */
+      display: block;
+      background-color: #0d1117;
+    }
+
+    /* ===== スマホ用調整 ===== */
+    @media screen and (max-width: 600px) {
+      .container {
+        width: 100%;
+        margin-top: 80px;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .weather-chart {
+        min-width: 1200px;
+        height: 250px; /* スマホでは高さを低く */
+      }
+    }
+
+    /* ===== 更新時刻表示 ===== */
+    #update-time {
+      font-size: 12px;
+      color: #8b949e;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <div class="logooya">
-            <div style="height:20px;"></div>
-            <a href="index.html"><h1>Weather Pain</h1></a>
-            <div style="height:20px;"></div>
-        </div>
-    </header>
-    <div style="height:180px;"></div>
+  <header>気圧変化ビューア</header>
 
-    <!-- 天気予報をデフォルト表示に変更 -->
-    <div id="survey-page" class="page" style="display: none;">
-        <div class="container">
-            <div id="question-container" class="question-box"></div>
-            <div id="options-container" class="options-box"></div>
-            <button id="next-btn" class="btn">次へ</button>
-        </div>
+  <div class="container">
+    <div class="chart-wrapper">
+      <canvas id="weatherChart" class="weather-chart"></canvas>
     </div>
+    <div id="update-time">最終更新: --:--:--</div>
+  </div>
 
-    <div id="weather-page" class="page">
-        <div class="container">
-            <h1>最新の気象データ</h1>
-            <div class="chart-wrapper">
-                <canvas id="weatherChart" class="weather-chart"></canvas>
-            </div>
-            <p id="update-time">データ取得中...</p>
-        </div>
-    </div>
+  <script>
+    let weatherChart;
 
-    <div id="form-page" class="page" style="display: none;">
-        <div class="container">
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSesH00L_RBN2x-iqtv6i36ovIjnfKhjH6Yi-y0yIreCGa0fFw/viewform?embedded=true"
-                width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0">
-                Loading…
-            </iframe>
-        </div>
-    </div>
+    // デモ用ダミーデータ（気圧変化のサンプル）
+    const sampleData = {
+      labels: Array.from({ length: 48 }, (_, i) => i + "h"),
+      pressures: Array.from({ length: 48 }, () =>
+        1000 + Math.sin(Math.random() * Math.PI * 4) * 20 + Math.random() * 5
+      ),
+    };
 
-    <div class="footer">
-        <button class="tab-btn" data-target="survey-page">アンケート</button>
-        <button class="tab-btn" data-target="weather-page">天気予報</button>
-        <button class="tab-btn" data-target="form-page">FORM</button>
-    </div>
+    function updateChart(data) {
+      const ctx = document.getElementById("weatherChart").getContext("2d");
+      if (weatherChart) weatherChart.destroy();
 
-    <script src="script.js"></script>
+      // グラデーションカラー（気圧変化の強弱で色を変化）
+      const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+      gradient.addColorStop(0, "#ff4444");
+      gradient.addColorStop(0.5, "#ffaa00");
+      gradient.addColorStop(1, "#00aaff");
+
+      weatherChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: data.labels,
+          datasets: [
+            {
+              data: data.pressures,
+              borderColor: gradient,
+              borderWidth: 3,
+              fill: false,
+              tension: 0.4, // 曲線っぽく
+              pointRadius: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            duration: 2000,
+            easing: "easeOutCubic",
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+          },
+          scales: {
+            x: {
+              display: false,
+              grid: { display: false, drawBorder: false },
+              ticks: { display: false },
+            },
+            y: {
+              display: false,
+              grid: { display: false, drawBorder: false },
+              ticks: { display: false },
+            },
+          },
+          layout: { padding: 0 },
+          elements: {
+            line: {
+              tension: 0.5,
+            },
+          },
+        },
+      });
+
+      document.getElementById("update-time").textContent =
+        "最終更新: " + new Date().toLocaleTimeString();
+    }
+
+    // 初回描画
+    updateChart(sampleData);
+  </script>
 </body>
 </html>
