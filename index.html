@@ -16,18 +16,22 @@
         flex-direction: column;
         align-items: center;
         height: 100vh;
+        overflow: hidden;
     }
 
     .chart-wrapper {
         width: 100vw;
         height: 70vh;
-        overflow-x: scroll;
+        overflow-x: auto;
         overflow-y: hidden;
-        white-space: nowrap;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     canvas {
         background: transparent;
+        min-width: 150%;
     }
 
     .legend {
@@ -41,11 +45,11 @@
         height: 10px;
         width: 100%;
         background: linear-gradient(to right,
-            #2fa1ff,   /* 高気圧 -->
+            #2fa1ff,
             #00ffae,
             #faff00,
             #ff7b00,
-            #ff0000    /* 低気圧 */
+            #ff0000
         );
         border-radius: 6px;
         margin-bottom: 4px;
@@ -61,7 +65,7 @@
 <div class="legend">
     <div class="gradient-bar"></div>
     <span>高気圧　→　低気圧（色で直感的に表現）</span><br>
-    <span style="opacity:0.6;">日付と時間のみ表示</span>
+    <span style="opacity:0.6;">横にスクロールして確認できます</span>
 </div>
 
 <script>
@@ -75,7 +79,7 @@
 
     const data = [1020, 1018, 1015, 1009, 1005, 1008, 1012, 1016];
 
-    const gradient = ctx.createLinearGradient(0, 0, 500, 0);
+    const gradient = ctx.createLinearGradient(0, 0, 600, 0);
     gradient.addColorStop(0, '#2fa1ff');
     gradient.addColorStop(0.3, '#00ffae');
     gradient.addColorStop(0.5, '#faff00');
@@ -85,9 +89,9 @@
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels,
+            labels,
             datasets: [{
-                data: data,
+                data,
                 borderColor: gradient,
                 borderWidth: 4,
                 pointRadius: 0,
@@ -95,17 +99,15 @@
             }]
         },
         options: {
-            responsive: false,
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { display: false }
             },
             scales: {
                 y: { display: false },
                 x: {
-                    ticks: {
-                        color: 'white',
-                        font: { size: 12 }
-                    },
+                    ticks: { color: 'white', font: { size: 12 }},
                     grid: { display: false }
                 }
             }
