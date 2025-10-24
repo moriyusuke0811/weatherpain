@@ -59,6 +59,30 @@
       display: block;
     }
 
+    /* --- 凡例エリア --- */
+    .legend-area {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .gradient-bar {
+      width: 80%;
+      height: 18px;
+      margin: 10px auto;
+      background: linear-gradient(to right, #ff4444, #ffaa00, #00aaff);
+      border-radius: 10px;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+    }
+
+    .legend-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 80%;
+      margin: 0 auto;
+      font-size: 12px;
+      color: #c9d1d9;
+    }
+
     /* スマホ対応 */
     @media screen and (max-width: 600px) {
       .container {
@@ -67,12 +91,19 @@
         border-radius: 0;
         box-shadow: none;
       }
+
       .chart-wrapper {
         overflow-x: auto;
       }
+
       canvas.weather-chart {
         height: 240px;
-        width: 1000px; /* スマホでは横幅を短くして歪み防止 */
+        width: 1000px;
+      }
+
+      .gradient-bar,
+      .legend-labels {
+        width: 90%;
       }
     }
 
@@ -90,13 +121,24 @@
     <div class="chart-wrapper">
       <canvas id="weatherChart" class="weather-chart"></canvas>
     </div>
+
+    <!-- 🔵 グラデーション凡例エリア -->
+    <div class="legend-area">
+      <div class="gradient-bar"></div>
+      <div class="legend-labels">
+        <span>低気圧傾向</span>
+        <span>通常</span>
+        <span>高気圧傾向</span>
+      </div>
+    </div>
+
     <div id="update-time">最終更新: --:--:--</div>
   </div>
 
   <script>
     let weatherChart;
 
-    // ✅ ダミーデータ（ランダムな気圧変化を生成）
+    // ✅ ダミーデータ（ランダムな気圧変化）
     const sampleData = {
       labels: Array.from({ length: 48 }, (_, i) => `${i}h`),
       pressures: Array.from({ length: 48 }, (_, i) =>
@@ -110,13 +152,13 @@
 
       if (weatherChart) weatherChart.destroy();
 
-      // ★ デバイスピクセル比をリセットして歪み防止
+      // デバイスピクセル比補正
       const ratio = window.devicePixelRatio || 1;
       canvas.width = canvas.offsetWidth * ratio;
       canvas.height = canvas.offsetHeight * ratio;
       ctx.scale(ratio, ratio);
 
-      // グラデーションカラー
+      // グラデーション（赤→オレンジ→青）
       const gradient = ctx.createLinearGradient(0, 0, canvas.offsetWidth, 0);
       gradient.addColorStop(0, "#ff4444");
       gradient.addColorStop(0.5, "#ffaa00");
@@ -132,13 +174,13 @@
               borderColor: gradient,
               borderWidth: 3,
               fill: false,
-              tension: 0.4, // 曲線っぽく
-              pointRadius: 0, // 点を非表示
+              tension: 0.4,
+              pointRadius: 0,
             },
           ],
         },
         options: {
-          responsive: false, // ★ Chart.jsの自動サイズ調整をOFF
+          responsive: false,
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
