@@ -6,7 +6,6 @@
   <title>気圧変化グラフ</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ===== 基本レイアウト ===== */
     body {
       background-color: #0d1117;
       color: #e6edf3;
@@ -45,7 +44,6 @@
       text-align: center;
     }
 
-    /* ===== グラフ表示領域 ===== */
     .chart-wrapper {
       width: 100%;
       overflow-x: auto;
@@ -55,14 +53,13 @@
       background-color: #0d1117;
     }
 
-    .weather-chart {
-      min-width: 1600px; /* 横にスクロール可能 */
-      height: 400px;     /* PC用高さ */
+    canvas.weather-chart {
+      height: 400px;
+      width: 1600px;
       display: block;
-      background-color: #0d1117;
     }
 
-    /* ===== スマホ用調整 ===== */
+    /* スマホ対応 */
     @media screen and (max-width: 600px) {
       .container {
         width: 100%;
@@ -70,13 +67,15 @@
         border-radius: 0;
         box-shadow: none;
       }
-      .weather-chart {
-        min-width: 1200px;
-        height: 250px; /* スマホでは高さを低く */
+      .chart-wrapper {
+        overflow-x: auto;
+      }
+      canvas.weather-chart {
+        height: 240px;
+        width: 1000px; /* スマホでは横幅を少し短くして歪み防止 */
       }
     }
 
-    /* ===== 更新時刻表示 ===== */
     #update-time {
       font-size: 12px;
       color: #8b949e;
@@ -97,20 +96,28 @@
   <script>
     let weatherChart;
 
-    // デモ用ダミーデータ（気圧変化のサンプル）
+    // ダミーデータ
     const sampleData = {
       labels: Array.from({ length: 48 }, (_, i) => i + "h"),
       pressures: Array.from({ length: 48 }, () =>
-        1000 + Math.sin(Math.random() * Math.PI * 4) * 20 + Math.random() * 5
+        1000 + Math.sin(i / 4) * 15 + Math.random() * 5
       ),
     };
 
     function updateChart(data) {
-      const ctx = document.getElementById("weatherChart").getContext("2d");
+      const canvas = document.getElementById("weatherChart");
+      const ctx = canvas.getContext("2d");
+
       if (weatherChart) weatherChart.destroy();
 
-      // グラデーションカラー（気圧変化の強弱で色を変化）
-      const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+      // ★ デバイスピクセル比をリセットして歪み防止
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = canvas.offsetWidth * ratio;
+      canvas.height = canvas.offsetHeight * ratio;
+      ctx.scale(ratio, ratio);
+
+      // グラデーションカラー
+      const gradient = ctx.createLinearGradient(0, 0, canvas.offsetWidth, 0);
       gradient.addColorStop(0, "#ff4444");
       gradient.addColorStop(0.5, "#ffaa00");
       gradient.addColorStop(1, "#00aaff");
@@ -125,18 +132,14 @@
               borderColor: gradient,
               borderWidth: 3,
               fill: false,
-              tension: 0.4, // 曲線っぽく
+              tension: 0.4,
               pointRadius: 0,
             },
           ],
         },
         options: {
-          responsive: true,
+          responsive: false, // ★ これが重要：Chart.jsの自動リサイズを無効化
           maintainAspectRatio: false,
-          animation: {
-            duration: 2000,
-            easing: "easeOutCubic",
-          },
           plugins: {
             legend: { display: false },
             tooltip: { enabled: false },
@@ -144,19 +147,11 @@
           scales: {
             x: {
               display: false,
-              grid: { display: false, drawBorder: false },
-              ticks: { display: false },
+              grid: { display: false },
             },
             y: {
               display: false,
-              grid: { display: false, drawBorder: false },
-              ticks: { display: false },
-            },
-          },
-          layout: { padding: 0 },
-          elements: {
-            line: {
-              tension: 0.5,
+              grid: { display: false },
             },
           },
         },
@@ -166,7 +161,6 @@
         "最終更新: " + new Date().toLocaleTimeString();
     }
 
-    // 初回描画
     updateChart(sampleData);
   </script>
 </body>
